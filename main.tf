@@ -89,7 +89,7 @@ module "azurerm_appgw" {
   listener_name = "cmp_listener"
   frontend_port_name = "cmp-port"
   request_routing_rule_name = "cmp-rule"
-  # depends_on = [ module.azurerm_appgw_subnet ]
+  subnet_id = module.azurerm_appgw_subnet.subnet_id
 
 }
 

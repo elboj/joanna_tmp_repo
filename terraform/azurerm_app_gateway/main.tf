@@ -1,8 +1,8 @@
-data "azurerm_subnet" "appgw_subnet" {
-  name = var.appgw_subnet_name
-  virtual_network_name = var.virtual_network_name
-  resource_group_name = var.resource_group_name
-}
+# data "azurerm_subnet" "appgw_subnet" {
+#   name = var.appgw_subnet_name
+#   virtual_network_name = var.virtual_network_name
+#   resource_group_name = var.resource_group_name
+# }
 
 #CREATE IDENTITY
 resource "azurerm_user_assigned_identity" "user_assigned_identity" {
@@ -35,7 +35,7 @@ resource "azurerm_application_gateway" "app_gateway" {
 
   gateway_ip_configuration {
     name      = var.appgw_congif_pip
-    subnet_id = data.azurerm_subnet.appgw_subnet.id
+    subnet_id = var.subnet_id
   }
 
   frontend_port {

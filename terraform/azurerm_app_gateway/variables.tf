@@ -22,6 +22,10 @@ variable "sku_name" {
   # default = "nic-uks-vm-dev001"
 }
 
+variable "subnet_id" {
+  
+}
+
 variable "sku_tier" {
   description = "sku_tier"
   # default = "nic-uks-vm-dev001"
