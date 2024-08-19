@@ -1,3 +1,35 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source = "hashicorp/azurerm"
+      version = "3.113.0"
+    }
+  }
+  backend "azurerm" {
+    resource_group_name  = "rg-uks-gen-dev001"  
+    storage_account_name = "sauksapimdev001"                     
+    container_name       = "terraform"                      
+    key                  = "cmp.terraform.tfstate"
+    client_id            = "b23745d5-3e75-4c00-a6a1-d476e9f4b7b2"
+    client_secret        = "Zb.8Q~QUlEVrAg2GswkcTATYFr0P9AKH7vhdLbp1"
+    subscription_id      = "4d2f3d90-3f7a-4f44-bb7f-bee999a3638b"
+    tenant_id            = "5e9800ce-6304-48bc-9716-d6d12b2353eb"
+
+  }
+}
+
+
+
+provider "azurerm" {
+  # Configuration options
+  features {
+    key_vault {
+      purge_soft_delete_on_destroy = true
+      recover_soft_deleted_key_vaults = true
+    }
+  }
+}
+
 module "azurerm_resource_group" {
   source = "./terraform/azurerm_resource_group"
   location = "uksouth"
@@ -10,7 +42,7 @@ module "azurerm_vnet" {
   resource_group_name = "cloud-migration-terraform"
   location = "uksouth"
   address_space = "172.19.0.0/16"
-  depends_on = [ module.azurerm_resource_group ]
+  # depends_on = [ module.azurerm_resource_group ]
 }
 
 module "azurerm_appgw_subnet" {
@@ -19,7 +51,7 @@ module "azurerm_appgw_subnet" {
   resource_group_name = "cloud-migration-terraform"
   address_prefixes = ["172.19.0.0/24"]
   subnet_name = "appgwaf_snt_cmt_poc001"
-  depends_on = [ module.azurerm_vnet ]
+  # depends_on = [ module.azurerm_vnet ]
 }
 
 module "azurerm_db_subnet" {
@@ -28,7 +60,7 @@ module "azurerm_db_subnet" {
   resource_group_name = "cloud-migration-terraform"
   address_prefixes = ["172.19.2.0/24"]
   subnet_name = "db_snt_cmt_poc001"
-  depends_on = [ module.azurerm_vnet ]
+  # depends_on = [ module.azurerm_vnet ]
 }
 
 module "azurerm_web_subnet" {
@@ -37,7 +69,7 @@ module "azurerm_web_subnet" {
   resource_group_name = "cloud-migration-terraform"
   address_prefixes = ["172.19.1.0/24"]
   subnet_name = "web_snt_cmt_poc001"
-  depends_on = [ module.azurerm_vnet ]
+  # depends_on = [ module.azurerm_vnet ]
 }
 
 module "azurerm_appgw" {
@@ -57,7 +89,7 @@ module "azurerm_appgw" {
   listener_name = "cmp_listener"
   frontend_port_name = "cmp-port"
   request_routing_rule_name = "cmp-rule"
-  depends_on = [ module.azurerm_appgw_subnet ]
+  # depends_on = [ module.azurerm_appgw_subnet ]
 
 }
 
@@ -70,7 +102,7 @@ module "azurerm_vmss" {
   vmss_name = "ukspocvmss"
   vmss_sku = "Standard_F2"
   rsv_name = "rsv-cmp-poc"
-  depends_on = [ module.azurerm_web_subnet ]
+  # depends_on = [ module.azurerm_web_subnet ]
 }
 
 module "azurerm_key_vault" {

@@ -1,19 +1,4 @@
-terraform {
-  required_providers {
-    azurerm = {
-      source = "hashicorp/azurerm"
-      version = "3.113.0"
-    }
-  }
-  backend "azurerm" {
-    
-  }
-}
 
-provider "azurerm" {
-  # Configuration options
-  features {}
-}
 resource "azurerm_subnet" "subnet" {
   name                 = var.subnet_name
   resource_group_name  = var.resource_group_name
