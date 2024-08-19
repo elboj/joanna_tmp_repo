@@ -39,7 +39,7 @@ module "azurerm_resource_group" {
 module "azurerm_vnet" {
   source = "./terraform/azurerm_vnet"
   virtual_network_name = "cmt-poc-vnt-uks"
-  resource_group_name = "cloud-migration-terraform"
+  resource_group_name = module.azurerm_resource_group.resource_group_name
   location = "uksouth"
   address_space = "172.19.0.0/16"
   # depends_on = [ module.azurerm_resource_group ]
@@ -47,8 +47,8 @@ module "azurerm_vnet" {
 
 module "azurerm_appgw_subnet" {
   source = "./terraform/azurerm_subnet"
-  virtual_network_name = "cmt-poc-vnt-uks"
-  resource_group_name = "cloud-migration-terraform"
+  virtual_network_name = module.azurerm_vnet.virtual_network_name
+  resource_group_name = module.azurerm_resource_group.resource_group_name
   address_prefixes = ["172.19.0.0/24"]
   subnet_name = "appgwaf_snt_cmt_poc001"
   # depends_on = [ module.azurerm_vnet ]
@@ -56,8 +56,8 @@ module "azurerm_appgw_subnet" {
 
 module "azurerm_db_subnet" {
   source = "./terraform/azurerm_subnet"
-  virtual_network_name = "cmt-poc-vnt-uks"
-  resource_group_name = "cloud-migration-terraform"
+  virtual_network_name = module.azurerm_vnet.virtual_network_name
+  resource_group_name = module.azurerm_resource_group.resource_group_name
   address_prefixes = ["172.19.2.0/24"]
   subnet_name = "db_snt_cmt_poc001"
   # depends_on = [ module.azurerm_vnet ]
@@ -65,8 +65,8 @@ module "azurerm_db_subnet" {
 
 module "azurerm_web_subnet" {
   source = "./terraform/azurerm_subnet"
-  virtual_network_name = "cmt-poc-vnt-uks"
-  resource_group_name = "cloud-migration-terraform"
+  virtual_network_name = module.azurerm_vnet.virtual_network_name
+  resource_group_name = module.azurerm_resource_group.resource_group_name
   address_prefixes = ["172.19.1.0/24"]
   subnet_name = "web_snt_cmt_poc001"
   # depends_on = [ module.azurerm_vnet ]
@@ -74,8 +74,8 @@ module "azurerm_web_subnet" {
 
 module "azurerm_appgw" {
   source = "./terraform/azurerm_app_gateway"
-  virtual_network_name = "cmt-poc-vnt-uks"
-  resource_group_name = "cloud-migration-terraform"
+  virtual_network_name = module.azurerm_vnet.virtual_network_name
+  resource_group_name = module.azurerm_resource_group.resource_group_name
   appgw_subnet_name = "appgwaf_snt_cmt_poc001"
   appgw_public_ip = "appgw_pip"
   domain_name_label = "cmppip"
@@ -95,9 +95,9 @@ module "azurerm_appgw" {
 
 module "azurerm_vmss" {
   source = "./terraform/azurerm_vmss"
-  resource_group_name = "cloud-migration-terraform"
+  resource_group_name = module.azurerm_resource_group.resource_group_name
   location = "uksouth"
-  virtual_network_name = "cmt-poc-vnt-uks"
+  virtual_network_name = module.azurerm_vnet.virtual_network_name
   vmss_subnet_name = "web_snt_cmt_poc001"
   vmss_name = "ukspocvmss"
   vmss_sku = "Standard_F2"
@@ -112,14 +112,14 @@ module "azurerm_key_vault" {
   sub_resource_name = "vault"
   private_dns_name = "privatelink.vaultcore.azure.net"
   private_endpoint_subnet_name = "db_snt_cmt_poc001"
-  resource_group_name = "cloud-migration-terraform"
+  resource_group_name = module.azurerm_resource_group.resource_group_name
   location = "uksouth"
-  virtual_network_name = "cmt-poc-vnt-uks"
+  virtual_network_name = module.azurerm_vnet.virtual_network_name
 }
 
 module "azurerm_sql" {
   source = "./terraform/azurerm_mssql_server"
-  resource_group_name = "cloud-migration-terraform"
+  resource_group_name = module.azurerm_resource_group.resource_group_name
   location = "uksouth"
   mssql_server_name = "cmpftpoc-server"
   administrator_login = "joanna"
@@ -127,13 +127,13 @@ module "azurerm_sql" {
   mssql_database_name = "cmp-db-poc"
   max_size_gb = 30
   min_capacity = 1
-  private_endpoint_subnet_name = "db_snt_cmt_poc001"
-  virtual_network_name = "cmt-poc-vnt-uks"
+  private_endpoint_subnet_name = module.azurerm_db_subnet.subnet_name
+  virtual_network_name = module.azurerm_vnet.virtual_network_name
 }
 
 module "azurerm_storage_account" {
   source = "./terraform/azurerm_storage_account"
-  resource_group_name = "cloud-migration-terraform"
+  resource_group_name = module.azurerm_resource_group.resource_group_name
   location = "uksouth"
   account_replication_type = "LRS"
   account_tier = "Standard"
@@ -142,7 +142,7 @@ module "azurerm_storage_account" {
 
 module "azurerm_cosmosdb_account" {
   source = "./terraform/azurerm_cosmos_db"
-  resource_group_name = "cloud-migration-terraform"
+  resource_group_name = module.azurerm_resource_group.resource_group_name
   location = "uksouth"
   offer_type = "Standard"
   kind = "MongoDB"
