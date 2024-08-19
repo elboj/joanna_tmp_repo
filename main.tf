@@ -102,6 +102,7 @@ module "azurerm_vmss" {
   vmss_name = "ukspocvmss"
   vmss_sku = "Standard_F2"
   rsv_name = "rsv-cmp-poc"
+  subnet_id = module.azurerm_web_subnet.subnet_id
   # depends_on = [ module.azurerm_web_subnet ]
 }
 

@@ -1,10 +1,10 @@
 
 
-data "azurerm_subnet" "vmss_subnet" {
-  name = var.vmss_subnet_name
-  virtual_network_name = var.virtual_network_name
-  resource_group_name = var.resource_group_name
-}
+# data "azurerm_subnet" "vmss_subnet" {
+#   name = var.vmss_subnet_name
+#   virtual_network_name = var.virtual_network_name
+#   resource_group_name = var.resource_group_name
+# }
 
 # resource "azurerm_user_assigned_identity" "user_assigned_identity" {
 #   resource_group_name = var.resource_group_name
@@ -46,7 +46,7 @@ resource "azurerm_windows_virtual_machine_scale_set" "example" {
     ip_configuration {
       name      = "${var.vmss_name}-iponfig"
       primary   = true
-      subnet_id = data.azurerm_subnet.vmss_subnet.id
+      subnet_id = var.subnet_id
     }
   }
 }

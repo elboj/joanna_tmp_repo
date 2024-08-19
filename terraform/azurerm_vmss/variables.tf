@@ -22,6 +22,11 @@ variable "rsv_name" {
   default = null
 }
 
+variable "subnet_id" {
+  
+}
+
+
 
 variable "vmss_name" {
   type = string

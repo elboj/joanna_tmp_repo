@@ -5,11 +5,11 @@
 # }
 
 #CREATE IDENTITY
-resource "azurerm_user_assigned_identity" "user_assigned_identity" {
-  location            = var.location
-  name                = "${var.app_gateway_name}-identity" 
-  resource_group_name = var.resource_group_name
-}
+# resource "azurerm_user_assigned_identity" "user_assigned_identity" {
+#   location            = var.location
+#   name                = "${var.app_gateway_name}-identity" 
+#   resource_group_name = var.resource_group_name
+# }
 #CREATE PUBLIC IP
 resource "azurerm_public_ip" "public_ip" {
   name                =  var.appgw_public_ip
@@ -43,10 +43,10 @@ resource "azurerm_application_gateway" "app_gateway" {
     port = 80
   }
 
-  identity {
-    type = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.user_assigned_identity.id]
-  }
+  # identity {
+  #   type = "UserAssigned"
+  #   identity_ids = [azurerm_user_assigned_identity.user_assigned_identity.id]
+  # }
 
   frontend_ip_configuration {
     name                 = var.frontend_ip_configuration_name
